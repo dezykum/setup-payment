@@ -1,37 +1,37 @@
-sbimport { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, Renderer2, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef , Renderer2, ElementRef, ViewChild } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { DomSanitizer } from '@angular/platform-browser';
-import * as AWS from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 import { DataStoreService } from '../../services/data-store.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 
 
-import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
+import {trigger, state, style, animate, transition, keyframes} from '@angular/animations';
 
-@Component({
+@Component( {
   selector: 'app-chatbot',
   templateUrl: './chatbot.component.html',
   animations: [
-    trigger('enterAnimation', [
-      state('inactive', style({
-        transform: 'translateY(100%)',
-        opacity: 0
-      })),
-      state('active', style({
-        transform: 'translateY(0%)',
-        opacity: 1
-      })),
-      transition('inactive => active', animate('500ms', style({ transform: 'translateY(0%)', opacity: 1 }))),
-      transition('active => inactive', animate('500ms', style({ transform: 'translateY(100%)', opacity: 0 })))
-    ])
-  ],
-  styleUrls: ['./chatbot.component.scss'],
+trigger('enterAnimation', [
+  state('inactive', style({
+    transform: 'translateY(100%)',
+    opacity: 0
+})),
+state('active', style({
+  transform: 'translateY(0%)',
+  opacity: 1
+})),
+transition('inactive => active', animate('500ms', style({transform: 'translateY(0%)', opacity: 1}))),
+transition('active => inactive', animate('500ms', style({transform: 'translateY(100%)', opacity: 0})))
+])
+],
+  styleUrls: [ './chatbot.component.scss' ],
   encapsulation: ViewEncapsulation.Emulated
-})
+} )
 export class ChatbotComponent implements OnInit {
 
   public message: string;
@@ -44,62 +44,57 @@ export class ChatbotComponent implements OnInit {
   public isStarDisabled = false;
   public intentName = '';
   public intentId = '';
-  public displayStars: boolean = false;
+  public displayStars:boolean = false;
   public displayCarousel: boolean = false;
   public carouselDataCollection = [];
   public carouselData = [];
   public selectedItem = '';
   public carouselList = [];
-  public selectedIndex: any;
+  public selectedIndex : any;
   public isIndexOne: boolean = false;
   public isCalender = false;
   public urlString = location.href;
-  public typingStatement: boolean = false;
+  public typingStatement :boolean=false;
   public currenturl;
 
-  paramval: { name: String, intentnameVal: String };
+  paramval:{ name:String, intentnameVal: String};
 
 
-  public myCredentials = new AWS.CognitoIdentityCredentials({ IdentityPoolId: 'us-east-1:2063fcc9-c31a-49bb-a2dd-c5511338e8bd' });
-  public config = new AWS.Config({
-    credentials: this.myCredentials,
-
-    region: 'us-east-1'
-  });
-  public lexUserId = 'chatbot-demo' + Date.now();;
-  public sessionAttributes = {};
-  public parameters = {
-    botAlias: 'SetUpPaymentsNew',
-    botName: 'SetUpPaymentsNew',
-    inputText: 'HI',
-    userId: this.lexUserId,
-    //sessionAttributes: this.sessionAttributes
+  public myCredentials = new AWS.CognitoIdentityCredentials( { IdentityPoolId: 'us-east-1:2063fcc9-c31a-49bb-a2dd-c5511338e8bd' } );
+    public config = new AWS.Config( {
+        credentials: this.myCredentials,
+        region: 'us-east-1'
+    } );
+    public lexUserId = 'chatbot-demo' + Date.now(); ;
+    public sessionAttributes = {};
+    public parameters = {
+     botAlias: 'SetUpPaymentsNew',
+      botName: 'SetUpPaymentsNew',
+      inputText: 'HI',
+      userId: this.lexUserId,
+      //sessionAttributes: this.sessionAttributes
   };
 
-  constructor(public sanetizer: DomSanitizer, private cdr: ChangeDetectorRef, public router: Router, private route: ActivatedRoute, public dataStore: DataStoreService) {
-    AWS.config.update(this.config);
+  constructor( public sanetizer: DomSanitizer,  private cdr: ChangeDetectorRef, public router: Router,private route: ActivatedRoute, public dataStore: DataStoreService ) {
+    AWS.config.update( this.config );
 
+}
+
+  ngOnInit () {
+   
+   this.paramval={
+    name:this.route.snapshot.params['name'],
+    intentnameVal:this.route.snapshot.params['intentid'],
+    //faq:this.route.snapshot.params['faq']
+   }
+
+
+   if (typeof this.paramval.intentnameVal === "undefined") {
+    this.paramval.name = 'Heather';
   }
 
-  ngOnInit() {
-
-    this.paramval = {
-
-      name: this.route.snapshot.params['name'],
-      intentnameVal: this.route.snapshot.params['intentid'],
-      //faq:this.route.snapshot.params['faq']
-
-    }
-
-
-    if (typeof this.paramval.intentnameVal === "undefined") {
-
-      this.paramval.name = 'Heather';
-    }
-
-    //  console.log("params" +this.route.snapshot.params['name'] + " intent" + this.paramval.intentnameVal );
-    this.toggleChatBot(true);
-
+  //  console.log("params" +this.route.snapshot.params['name'] + " intent" + this.paramval.intentnameVal );
+  this.toggleChatBot(true);
   }
 
   buttonColor: string = "#ffffff";
@@ -117,6 +112,7 @@ export class ChatbotComponent implements OnInit {
   radio = [{ text: "£1800(Minimum Payment)" }, { text: "£2100(Minimum payment + 1 extra annual payment to shorten the mortgage to 25 years)" },
   { text: "£2400(Minimum payment + 2 extra annual payments to shorten the mortgage to 20 years)" }];
 
+ 
   sendMessage(postback?: any, event?: any) {
     if (this.message || postback) {
       if (event != undefined && event.srcElement.innerHTML.trim() == 'Add to Cart' && this.selectedItem == '') {
@@ -149,10 +145,10 @@ export class ChatbotComponent implements OnInit {
       this.message = null;
     }
   }
-
-  onSelect(query) {
+  onSelect(query){
     this.sendMessage(query);
   }
+
 
   buttonClick(button) {
     this.message = button;
@@ -229,7 +225,6 @@ export class ChatbotComponent implements OnInit {
     });
     this.message = null;
   }
-
 
   createChatConversation() {
     const isEoc = this.message === 'call customer agent';
@@ -311,62 +306,62 @@ export class ChatbotComponent implements OnInit {
 
 
 
-  public getCurrentTime() {
-    var nameValue = this.paramval.name.substring(0, 1).toUpperCase() + this.paramval.name.substring(1);
+  public getCurrentTime () {
+	var nameValue= this.paramval.name.substring(0, 1).toUpperCase() + this.paramval.name.substring(1);
     const d = new Date();
     const time = d.toLocaleTimeString();
     const currentTime = { time: time, message: '' };
-    if (d.getHours() < 12) {
-      currentTime.message = 'Good Morning ' + nameValue + '! <br/>';
-    } else if (d.getHours() <= 12 && d.getHours() < 16) {
-      currentTime.message = 'Good Afternoon ' + nameValue + '<br/>';
+    if ( d.getHours() < 12 ) {
+        currentTime.message = 'Good Morning '+ nameValue + '! <br/>';
+    } else if ( d.getHours() <= 12 && d.getHours() < 16 ) {
+        currentTime.message = 'Good Afternoon '+ nameValue + '<br/>';
     } else {
-      currentTime.message = 'Good Evening ' + nameValue + '!<br/>';
+        currentTime.message = 'Good Evening '+ nameValue + '!<br/>';
     }
     return currentTime;
-  }
+}
 
-  showResponsePreloader() {
-    this.chatConversation.push({
+  showResponsePreloader () {
+    this.chatConversation.push( {
       'from': 'bot', message: '<img class="mx-auto loader" src="./assets/images/loading.gif" />',
       timeStamp: this.getTime()
-    });
+    } );
   }
 
-  getMessageHistory(func: string) {
+  getMessageHistory ( func: string ) {
     const currentMessage = this.message;
-    if (this.messageIndex == 0) {
-      console.log("hi");
-    }
-    if (this.messageIndex > 0 && func === 'up' ||
-      (this.messageIndex >= 0 && this.messageIndex < this.userMessageCollection.length - 1 && func === 'down')) {
+	if(this.messageIndex ==0){
+		console.log("hi");
+	}
+    if ( this.messageIndex > 0 && func === 'up' ||
+      ( this.messageIndex >= 0 && this.messageIndex < this.userMessageCollection.length - 1 && func === 'down' ) ) {
       this.messageIndex = func === 'up' ? this.messageIndex - 1 : this.messageIndex + 1;
     }
     this.message = this.messageIndex === this.userMessageCollection.length ?
-      currentMessage : this.userMessageCollection[this.messageIndex];
+      currentMessage : this.userMessageCollection[ this.messageIndex ];
     this.getCaretPos();
   }
 
-  getTime(): string {
+  getTime (): string {
     const date = new Date;
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString( 'en-US', {
       hour: 'numeric',
       minute: 'numeric',
       hour12: true
-    });
+    } );
   }
 
-  getCaretPos(): void {
-    this.isCaretUp = !!(this.messageIndex > 0);
-    this.isCaretDown = !!(this.userMessageCollection.length - this.messageIndex > 1);
+  getCaretPos (): void {
+    this.isCaretUp = !!( this.messageIndex > 0 );
+    this.isCaretDown = !!( this.userMessageCollection.length - this.messageIndex > 1 );
   }
 
-  minimizeChatBot(value: boolean) {
+  minimizeChatBot(value: boolean){
 
-    if (value) {
+    if(value){
       this.state = 'active';
     }
-    else {
+    else{
       this.state = 'inactive';
     }
 
@@ -393,14 +388,19 @@ export class ChatbotComponent implements OnInit {
       this.chatConversation.length = 0;
     }
   }
-  ngAfterViewInit() {
-    this.cdr.detectChanges();
-  }
+ ngAfterViewInit() {
+  this.cdr.detectChanges();
+}
 
 
-  selectItem(itemName, item) {
-    this.selectedItem = itemName;
-    this.selectedIndex = item;
+selectItem(itemName,item){
+  // console.log(itemName);
+  this.selectedItem = itemName;
+  // console.log(item);
+  this.selectedIndex = item;
+  // this.d1.nativeElement.insertAdjacentHTML('afterend', '<div class="two">two</div>')
 
-  }
+}
+
+
 }
