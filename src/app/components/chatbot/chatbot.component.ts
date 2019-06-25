@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, Renderer2, ElementRef, ViewChild } from '@angular/core';
+sbimport { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, Renderer2, ElementRef, ViewChild } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as AWS from 'aws-sdk';
